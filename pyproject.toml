@@ -3,7 +3,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentgate"
+name = "agentgate-hitl"
 version = "0.1.0"
 description = "Multi-agent orchestration for Python with planning, typed tool calling, memory and human approval gates, served over FastAPI."
 readme = "README.md"

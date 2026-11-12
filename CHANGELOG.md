@@ -5,6 +5,9 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- Release workflow that publishes to PyPI as `agentgate-hitl` with trusted publishing.
+
 ## [0.1.0] - 2026-11-11
 
 ### Added
