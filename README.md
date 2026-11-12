@@ -61,22 +61,34 @@ python examples/quickstart.py
 ```python
 from agentgate import Agent, Orchestrator, Playbook, RulePlanner, StepSpec, tool
 
+
 @tool(description="Look up a customer's outstanding balance")
 def get_balance(customer: str) -> float:
     return {"acme": 12_500.0, "globex": 800.0}[customer]
+
 
 @tool(description="Issue a refund", requires_approval=lambda a: a["amount"] > 1_000)
 def refund(customer: str, amount: float) -> str:
     return f"refunded {amount:.2f} to {customer}"
 
-planner = RulePlanner([Playbook("refund", r"refund (\w+)", lambda m: [
-    StepSpec("bal", "support", "get_balance", {"customer": m[1]}),
-    StepSpec("pay", "finance", "refund", {"customer": m[1], "amount": "${bal}"}, ["bal"]),
-])])
-orch = Orchestrator([Agent("support", "support agent", [get_balance]),
-                     Agent("finance", "finance agent", [refund])], planner)
 
-run = orch.run("refund acme")                  # status: waiting_approval
+planner = RulePlanner(
+    [
+        Playbook(
+            "refund",
+            r"refund (\w+)",
+            lambda m: [
+                StepSpec("bal", "support", "get_balance", {"customer": m[1]}),
+                StepSpec("pay", "finance", "refund", {"customer": m[1], "amount": "${bal}"}, ["bal"]),
+            ],
+        )
+    ]
+)
+orch = Orchestrator(
+    [Agent("support", "support agent", [get_balance]), Agent("finance", "finance agent", [refund])], planner
+)
+
+run = orch.run("refund acme")  # status: waiting_approval
 approval = orch.pending_approvals()[0]
 run = orch.decide(approval.id, approve=True, by="finance-lead")
 ```
@@ -96,7 +108,7 @@ metrics: {'runs_started': 2, 'steps_succeeded': 4, 'runs_succeeded': 2, 'approva
 ```python
 from agentgate import LLMPlanner, OpenAICompatibleLLM, ConversationMemory
 
-llm = OpenAICompatibleLLM(base_url="http://localhost:11434/v1", model="llama3.1")   # Ollama, OpenAI, vLLM, ...
+llm = OpenAICompatibleLLM(base_url="http://localhost:11434/v1", model="llama3.1")  # Ollama, OpenAI, vLLM, ...
 orch = Orchestrator(agents, LLMPlanner(llm, memory=ConversationMemory()))
 ```
 
