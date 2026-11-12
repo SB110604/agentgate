@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentgate"
+version = "0.1.0"
+description = "Multi-agent orchestration for Python with planning, typed tool calling, memory and human approval gates, served over FastAPI."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Sahil Bodke" }]
+keywords = ["agentic-ai", "multi-agent", "ai-agents", "human-in-the-loop", "tool-calling", "llm", "fastapi", "orchestration"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Framework :: FastAPI",
+               "Topic :: Scientific/Engineering :: Artificial Intelligence", "Typing :: Typed"]
+dependencies = ["pydantic>=2.6", "httpx>=0.27"]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["fastapi>=0.110", "uvicorn>=0.29", "pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/SB110604/agentgate"
+Issues = "https://github.com/SB110604/agentgate/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentgate"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "--doctest-modules --doctest-glob='*.md' src tests"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["B008"]
+
+[tool.coverage.run]
+source = ["agentgate"]
